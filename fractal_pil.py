@@ -1,18 +1,24 @@
 #!/usr/bin/python3
 
+# fractal_pil.py - by Hannah Leitheiser
+#    Description: Generates the mandlebrot set in red
+#    saved in .png image format.
+#    run: python3 fractal_pil.py (in bash)
+#   requires: PIL library
+
 # Output a .png file with a rendering of the Mandlebrot fractal.
 from PIL import Image
 
 imageSize = (1000,800)
 
-def Mandlebrot(x, y, maxIterations=32):
+def Mandlebrot(x, y, maxIterations=31):
 	"""Returns 0 if the point x + iy is in the Mandlebrot set 
 	or the number of iterations of f(z) = z^2 + c before exiting bounds."""
 	(c, z) = (complex(x, y), 0)
 	for i in range(maxIterations):
 		z = z**2 + c
 		if z.imag ** 2 + z.real ** 2 > 4:
-			return i
+			return i+1
 	return 0
 
 image = Image.new('RGB', imageSize) 

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>~/fractals/frac_pil.py.html</title>
+<title>~/fractals/fractal_pil.py.html</title>
 <meta name="Generator" content="Vim/7.4">
 <meta name="plugin-version" content="vim7.4_v2">
 <meta name="syntax" content="python">
@@ -31,20 +31,25 @@ body { font-family: monospace; color: #ffffff; background-color: #000000; }
 <pre id='vimCodeElement'>
 <span class="Comment">#!/usr/bin/python3</span>
 
-<span class="Comment"># Output a .png file with a rendering of the Mandlebrot fractal.</span>
+<span class="Comment"># fractal_pil.py - by Hannah Leitheiser</span>
+<span class="Comment">#    Description: Generates the mandlebrot set in red</span>
+<span class="Comment">#    saved in .png image format.</span>
+<span class="Comment">#    run: python3 fractal_pil.py (in bash)</span>
+<span class="Comment">#   requires: PIL library</span>
 
+<span class="Comment"># Output a .png file with a rendering of the Mandlebrot fractal.</span>
 <span class="PreProc">from</span> PIL <span class="PreProc">import</span> Image
 
 imageSize = (<span class="Constant">1000</span>,<span class="Constant">800</span>)
 
-<span class="Statement">def</span> <span class="Identifier">Mandlebrot</span>(x, y, maxIterations=<span class="Constant">32</span>):
+<span class="Statement">def</span> <span class="Identifier">Mandlebrot</span>(x, y, maxIterations=<span class="Constant">31</span>):
 	<span class="Constant">&quot;&quot;&quot;</span><span class="Constant">Returns 0 if the point x + iy is in the Mandlebrot set </span>
 <span class="Constant">	or the number of iterations of f(z) = z^2 + c before exiting bounds.</span><span class="Constant">&quot;&quot;&quot;</span>
 	(c, z) = (<span class="Identifier">complex</span>(x, y), <span class="Constant">0</span>)
 	<span class="Statement">for</span> i <span class="Statement">in</span> <span class="Identifier">range</span>(maxIterations):
 		z = z**<span class="Constant">2</span> + c
 		<span class="Statement">if</span> z.imag ** <span class="Constant">2</span> + z.real ** <span class="Constant">2</span> &gt; <span class="Constant">4</span>:
-			<span class="Statement">return</span> i
+			<span class="Statement">return</span> i+<span class="Constant">1</span>
 	<span class="Statement">return</span> <span class="Constant">0</span>
 
 image = Image.new(<span class="Constant">'</span><span class="Constant">RGB</span><span class="Constant">'</span>, imageSize)
