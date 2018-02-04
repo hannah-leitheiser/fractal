@@ -5,12 +5,18 @@
 <table width="649px">
 <tr><td>
 
-<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;">
+<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #000000;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 </td></tr>
 
 
 <script>
+var zoom = 2;
+var imageSizeX = 1000;
+var imageSizeY = 800;
+var offsetX = 0;
+var offsetY = 0;
+var notDouble = true;
 
 function mandlebrot(x, y) {	
 	c_r = x;
@@ -28,24 +34,63 @@ function mandlebrot(x, y) {
 	return 0;
 	}
 
-var c = document.getElementById("myCanvas");
 
-c.ondblclick = function(e) { alert(); };
-
-var ctx = c.getContext("2d");
-
-var pixeldata = new Uint8ClampedArray( 1000 * 800 * 4);
-for(var x = 0 ; x < 1000 ; x++) {
-	for(var y = 0 ; y < 800 ; y++) { 
-		pixeldata[(y * 1000 + x)*4] = Math.floor( mandlebrot( x/400.0 - 1.85, y/400.0-1) *8) ;
-		pixeldata[(y * 1000 + x)*4 + 3] = 255;
+function draw() {
+	var c = document.getElementById("myCanvas");
+	var ctx = c.getContext("2d");
+	var pixeldata = new Uint8ClampedArray( imageSizeX *imageSizeY * 4);
+	for(var x = 0 ; x < imageSizeX ; x++) {
+		for(var y = 0 ; y < imageSizeY ; y++) { 
+			pixeldata[(y * imageSizeX + x)*4] = Math.floor( mandlebrot( zoom*(x - imageSizeX/2 - offsetX) / imageSizeY - 0.55, zoom * (y- imageSizeY/2 - offsetY) / imageSizeY) *8) ;
+			pixeldata[(y * imageSizeX + x)*4 + 3] = 255;
+			}
 		}
+
+	var data = new ImageData( pixeldata, imageSizeX, imageSizeY );
+	ctx.putImageData(data, 0,0);
 	}
 
-ctx.fillRect(0, 0, 100, 100);
 
-var data = new ImageData( pixeldata, 1000, 800 );
-ctx.putImageData(data, 0,0);
+var dblClickClearer;
+
+function zoom_out_fractal(event) {
+	notDouble = false;
+	zoom = zoom * 1.5;
+	offsetX = offsetX / (1.5);
+	offsetY = offsetY / (1.5);
+	draw();
+	clearTimeout(dblClickClearer);
+	dblClickClearer = setTimeout( function() { notDouble = true; }, 800);
+	}
+
+
+function zoom_fractal(e) {
+	if(notDouble)
+		setTimeout( function() {
+			if(notDouble) {
+				zoom = zoom / 1.5;
+				offsetX = offsetX + (imageSizeX/2) - e.clientX;
+				offsetY = offsetY + (imageSizeY/2) - e.clientY;
+				offsetX = offsetX * 1.5
+				offsetY = offsetY * 1.5
+				draw(); 
+				}
+			}, 200);
+	}
+
+
+draw();
+var c = document.getElementById("myCanvas");
+c.addEventListener( "dblclick",  zoom_out_fractal);
+c.addEventListener( "click",  zoom_fractal);
+
+
+
+
+
+
+
+
 
 
 

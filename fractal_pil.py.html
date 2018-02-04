@@ -44,7 +44,8 @@ imageSize = (<span class="Constant">1000</span>,<span class="Constant">800</span
 
 <span class="Statement">def</span> <span class="Identifier">Mandlebrot</span>(x, y, maxIterations=<span class="Constant">31</span>):
 	<span class="Constant">&quot;&quot;&quot;</span><span class="Constant">Returns 0 if the point x + iy is in the Mandlebrot set </span>
-<span class="Constant">	or the number of iterations of f(z) = z^2 + c before exiting bounds.</span><span class="Constant">&quot;&quot;&quot;</span>
+<span class="Constant">	   or the number of iterations of f(z) = z^2 + c </span>
+<span class="Constant">	   before exiting bounds.</span><span class="Constant">&quot;&quot;&quot;</span>
 	(c, z) = (<span class="Identifier">complex</span>(x, y), <span class="Constant">0</span>)
 	<span class="Statement">for</span> i <span class="Statement">in</span> <span class="Identifier">range</span>(maxIterations):
 		z = z**<span class="Constant">2</span> + c
@@ -58,7 +59,8 @@ pixels = image.load()
 <span class="Statement">for</span> x <span class="Statement">in</span> <span class="Identifier">range</span>(imageSize[<span class="Constant">0</span>]):
 	<span class="Statement">for</span> y <span class="Statement">in</span> <span class="Identifier">range</span>(imageSize[<span class="Constant">1</span>]):
 		<span class="Comment"># This involved some trial and error to center the graph.</span>
-		cordx = (x - imageSize[<span class="Constant">0</span>]/<span class="Constant">2</span> - <span class="Constant">0.3</span>*imageSize[<span class="Constant">1</span>]) / (imageSize[<span class="Constant">1</span>]*<span class="Constant">0.5</span>)
+		cordx = (x - imageSize[<span class="Constant">0</span>]/<span class="Constant">2</span> - <span class="Constant">0.3</span>*imageSize[<span class="Constant">1</span>])
+		             / (imageSize[<span class="Constant">1</span>]*<span class="Constant">0.5</span>)
 		cordy = (y - imageSize[<span class="Constant">1</span>]/<span class="Constant">2</span>) / (imageSize[<span class="Constant">1</span>]*<span class="Constant">0.5</span>)
 		<span class="Comment"># We'll just vary the red.</span>
 		pixels[x,y] = (Mandlebrot(cordx, cordy)*<span class="Constant">8</span>,<span class="Constant">0</span>,<span class="Constant">0</span>)
