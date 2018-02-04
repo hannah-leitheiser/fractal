@@ -19,13 +19,14 @@ Ubuntu library installation:
 #include <malloc.h>
 #include <png.h>
 
-/* return 0 for points in the Mandlebrot set, iteration count for those known to escape */
-unsigned int mandlebrot(double complex c, unsigned int maxIterations) {
+/* return 0 for points in the Mandlebrot set, 
+	iteration count for those known to escape */
+int mandlebrot(double complex c, int maxIterations) {
 	double complex z = 0;
 	for(unsigned int i = 0 ; i < maxIterations ; i++) {
 		z = z * z + c;
 		if(creal(z) * creal(z) + cimag(z) * cimag(z) > 4)
-			return i;
+			return i+1;
 		}
 	return 0;
 	}
@@ -42,7 +43,8 @@ int main(int argc, char *argv[]) {
 	png_infop info_ptr = NULL;
 	png_bytep row = NULL;
 	FILE* fp = fopen("fractal_c.png", "wb");
-	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 
+			NULL, NULL, NULL);
 	info_ptr = png_create_info_struct(png_ptr);
 	png_init_io(png_ptr, fp);
 
@@ -67,7 +69,8 @@ int main(int argc, char *argv[]) {
 	float scale = 2.0 / height;
 	for (int y=0 ; y<height ; y++) {
 		for (int x=0 ; x<width ; x++) {
-			row[x*3]=(uint8_t)mandlebrot( (double)x * scale - 1.85 + (((double)y * scale - 1)*I), 32 ) * 8;
+			row[x*3]=(uint8_t)mandlebrot( (double)x * scale - 1.85 + 
+				(((double)y * scale - 1)*I), 32 ) * 8;
 			}
 		png_write_row(png_ptr, row);
 		}

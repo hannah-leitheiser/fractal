@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html>
- <meta charset="UTF-8"> 
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Programming Fractals">
+  <meta name="keywords" content="JavaScript,Mandlebrot">
+  <meta name="author" content="Hannah Leitheiser">
+  <title>Javascript Fractal Explorer - Click to Zoom, Doubleclick to Zoom out</title>
+</head>
+
 <body>
-<table width="649px">
-<tr><td>
 
-<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #000000;">
-Your browser does not support the HTML5 canvas tag.</canvas>
-</td></tr>
-
+<canvas id="fractalCanvas" width="600" height="600" 
+	style="border:1px solid #000000;">
+	Your browser does not support the HTML5 canvas tag.
+	</canvas>
 
 <script>
+
+// Some variable for orienting the fractal.
 var zoom = 2;
-var imageSizeX = 1000;
-var imageSizeY = 800;
 var offsetX = 0;
 var offsetY = 0;
-var notDouble = true;
 
-function mandlebrot(x, y) {	
+var canvas = document.getElementById("fractalCanvas");
+var ctx = canvas.getContext("2d");
+var width = canvas.clientWidth;
+var height = canvas.clientHeight;
+
+/* --------------------- mandlebrot(x, y) ----------------------------
+
+   Returns 0 if the point x + iy is in the Mandlebrot set 
+    or the number of iterations of f(z) = z^2 + c 
+   before exiting bounds. */
+function mandlebrot(x, y) {
+	// People have made libraries for complex algebra
+	// but the math is pretty simple.
 	c_r = x;
 	c_i = y;
 	z_r = 0.0;
@@ -35,42 +52,62 @@ function mandlebrot(x, y) {
 	}
 
 
+/* ------------------------ draw() --------------------------------
+   Draws the fractal on the canvas. */
+
 function draw() {
-	var c = document.getElementById("myCanvas");
-	var ctx = c.getContext("2d");
-	var pixeldata = new Uint8ClampedArray( imageSizeX *imageSizeY * 4);
-	for(var x = 0 ; x < imageSizeX ; x++) {
-		for(var y = 0 ; y < imageSizeY ; y++) { 
-			pixeldata[(y * imageSizeX + x)*4] = Math.floor( mandlebrot( zoom*(x - imageSizeX/2 - offsetX) / imageSizeY - 0.55, zoom * (y- imageSizeY/2 - offsetY) / imageSizeY) *8) ;
-			pixeldata[(y * imageSizeX + x)*4 + 3] = 255;
+	// Four byte array for each pixel, RGBA.
+	var pixeldata = new Uint8ClampedArray( width *height * 4);
+	for(var x = 0 ; x < width ; x++) {
+		for(var y = 0 ; y < height ; y++) { 
+			// We'll iterate up to 32 times, then multiply
+			// that by 8 to get 0-255, for 8-bit color.
+			var iterations = 
+			   mandlebrot( zoom*(x-width/2 - offsetX) / height - 0.55, 
+			   zoom * (y- height/2 - offsetY) / height);
+			pixeldata[(y * width + x)*4] = iterations *8;
+			// Make the pixel opaque.
+			pixeldata[(y * width + x)*4 + 3] = 255;
 			}
 		}
 
-	var data = new ImageData( pixeldata, imageSizeX, imageSizeY );
+	// Transfers the data array to the canvas context.
+	var data = new ImageData( pixeldata, width, height );
 	ctx.putImageData(data, 0,0);
 	}
 
+/* ---------------------- click handlers ------------------------ */
 
+
+// These are for trying to prevent zooming on two clicks when the 
+// user double-clicks.
 var dblClickClearer;
+// That is, a double-click is not happening.
+var notDouble = true;
 
-function zoom_out_fractal(event) {
+// Double click zooms out.
+function zoom_out_fractal(e) {
 	notDouble = false;
 	zoom = zoom * 1.5;
 	offsetX = offsetX / (1.5);
 	offsetY = offsetY / (1.5);
 	draw();
+	// Used to keep double-clicks from being processed as clicks.
 	clearTimeout(dblClickClearer);
-	dblClickClearer = setTimeout( function() { notDouble = true; }, 800);
+	dblClickClearer = 
+		setTimeout( function() { notDouble = true; }, 800);
 	}
-
 
 function zoom_fractal(e) {
 	if(notDouble)
 		setTimeout( function() {
 			if(notDouble) {
+				// Zoom and recenter on the clicked point.
 				zoom = zoom / 1.5;
-				offsetX = offsetX + (imageSizeX/2) - e.clientX;
-				offsetY = offsetY + (imageSizeY/2) - e.clientY;
+				offsetX = offsetX + (width/2) - 
+				   e.clientX + canvas.getBoundingClientRect().left;
+				offsetY = offsetY + (height/2) - 
+				   e.clientY + canvas.getBoundingClientRect().top; ;
 				offsetX = offsetX * 1.5
 				offsetY = offsetY * 1.5
 				draw(); 
@@ -79,30 +116,11 @@ function zoom_fractal(e) {
 	}
 
 
+canvas.addEventListener( "dblclick",  zoom_out_fractal);
+canvas.addEventListener( "click",  zoom_fractal)
+
 draw();
-var c = document.getElementById("myCanvas");
-c.addEventListener( "dblclick",  zoom_out_fractal);
-c.addEventListener( "click",  zoom_fractal);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
-<tr><td></td><td>
-
 
 </body>
 </html>
