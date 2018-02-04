@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+ <meta charset="UTF-8"> 
+<body>
+<table width="649px">
+<tr><td>
+
+<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+</td></tr>
+
+
+<script>
+
+function mandlebrot(x, y) {	
+	c_r = x;
+	c_i = y;
+	z_r = 0.0;
+	z_i = 0.0;
+	for(var i = 1 ; i < 33 ; i++) {
+		z_r2 = (z_r * z_r) - (z_i * z_i) + c_r;
+		z_i = (2 * z_r * z_i) + c_i;
+		z_r = z_r2;
+		if( ( (z_r * z_r) + (z_i * z_i)) > 4) {
+			return i;
+			}
+		}
+	return 0;
+	}
+
+var c = document.getElementById("myCanvas");
+
+c.ondblclick = function(e) { alert(); };
+
+var ctx = c.getContext("2d");
+
+var pixeldata = new Uint8ClampedArray( 1000 * 800 * 4);
+for(var x = 0 ; x < 1000 ; x++) {
+	for(var y = 0 ; y < 800 ; y++) { 
+		pixeldata[(y * 1000 + x)*4] = Math.floor( mandlebrot( x/400.0 - 1.85, y/400.0-1) *8) ;
+		pixeldata[(y * 1000 + x)*4 + 3] = 255;
+		}
+	}
+
+ctx.fillRect(0, 0, 100, 100);
+
+var data = new ImageData( pixeldata, 1000, 800 );
+ctx.putImageData(data, 0,0);
+
+
+
+
+
+
+
+
+
+</script>
+<tr><td></td><td>
+
+
+</body>
+</html>
