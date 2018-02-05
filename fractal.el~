@@ -1,0 +1,19 @@
+(defun mand(x y i zr zi) 
+	"Determines whether point is in the Mandlebrot set."
+	(let ((zr2 zr)(zi2 zi)) 
+	(if (> i 8) t  
+		(if (> (+ (* zr2 zr2) (* zi2 zi2)) 4) nil 
+			(mand 
+				x 
+				y 
+				(+ i 1) 
+				(+ (- (* zr2 zr2) (* zi2 zi2)) x) 
+				(+ (* 2 zr2 zi2) y)
+				)
+			)
+		))
+	)
+
+(dotimes (y 80) 
+	(dotimes (x 200)  
+		(if (mand (* (- x 100)  0.01) (* (- y 40) 0.005)  0 0 0) (princ '*) (princ " " ))) (princ "\n"))i

@@ -1,11 +1,11 @@
 /* 
 
-frac_c.c
+fractal.c
  Hannah Leitheiser
 
 Produces a fractal saved as fractal_c.png.
 
-compile: gcc frac_c.c -o frac_c -lpng -lm
+compile: gcc fractal.c -o frac_c -lpng -lm
 dependencies: libpng and zlib
 Ubuntu library installation: 
 	sudo apt-get install libpng-dev
